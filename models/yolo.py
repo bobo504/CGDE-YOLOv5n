@@ -25,6 +25,9 @@ if str(ROOT) not in sys.path:
 if platform.system() != "Windows":
     ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
+from models.CBAM import CBAMBlock
+from models.extra_modules import CSPStage
+
 from models.common import (
     C3,
     C3SPP,
@@ -69,10 +72,6 @@ try:
     import thop  # for FLOPs computation
 except ImportError:
     thop = None
-
-from models.SE import SEAttention
-from models.CoordAttention import CoordAtt
-from models.ELA import ELA
 
 class Detect(nn.Module):
     """YOLOv5 Detect head for processing input tensors and generating detection outputs in object detection models."""
@@ -426,14 +425,15 @@ def parse_model(d, ch):
             DWConvTranspose2d,
             C3x,
             C3_DCN,
-            DCNv2
+            DCNv2,
+            CSPStage
         }:
             c1, c2 = ch[f], args[0]
             if c2 != no:  # if not output
                 c2 = make_divisible(c2 * gw, ch_mul)
 
             args = [c1, c2, *args[1:]]
-            if m in {BottleneckCSP, C3, C3TR, C3Ghost, C3x, C3_DCN}:
+            if m in {BottleneckCSP, C3, C3TR, C3Ghost, C3x, C3_DCN, CSPStage}:
                 args.insert(2, n)  # number of repeats
                 n = 1
         elif m is nn.BatchNorm2d:
@@ -451,7 +451,7 @@ def parse_model(d, ch):
             c2 = ch[f] * args[0] ** 2
         elif m is Expand:
             c2 = ch[f] // args[0] ** 2
-        elif m in {SEAttention, CoordAtt, ELA}:
+        elif m in {CBAMBlock}:
             args = [ch[f], *args]
         else:
             c2 = ch[f]
@@ -471,7 +471,7 @@ def parse_model(d, ch):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--cfg", type=str, default="yolov5n_insulator/yolov5n_ela_dcnv2.yaml", help="model.yaml")
+    parser.add_argument("--cfg", type=str, default="yolov5n_helmet/yolov5n_cbam_gfpn.yaml", help="model.yaml")
     parser.add_argument("--batch-size", type=int, default=1, help="total batch size for all GPUs")
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
     parser.add_argument("--profile", action="store_true", help="profile model speed")

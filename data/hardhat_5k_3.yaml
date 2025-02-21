@@ -1,0 +1,12 @@
+# YOLOv5 🚀 by Ultralytics, GPL-3.0 license
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+#path: ./hardhat_dataset/images  # dataset root dir
+train: ../../datasets/hardhat_5k/images/classes_3/train/
+val: ../../datasets/hardhat_5k/images/classes_3/val/
+test: ../../datasets/hardhat_5k/images/classes_3/test/
+
+names:
+  0: head_with_helmet
+  1: person_with_helmet
+  2: person_no_helmet

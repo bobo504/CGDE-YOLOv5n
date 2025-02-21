@@ -1,7 +1,7 @@
 # YOLOv5 🚀 by Ultralytics, AGPL-3.0 license
 
 # Parameters
-nc: 4  # number of classes
+nc: 3  # number of classes
 depth_multiple: 0.33  # model depth multiple
 width_multiple: 0.25  # layer channel multiple
 anchors:
@@ -17,13 +17,13 @@ backbone:
    [-1, 3, C3, [128]],            # 2
    [-1, 1, Conv, [256, 3, 2]],    # 3-P3/8
    [-1, 6, C3, [256]],            # 4
-   [-1, 1, CoordAtt, [32]],   # 5
+   [-1, 1, CBAMBlock, [16, 7]],   # 5
    [-1, 1, Conv, [512, 3, 2]],    # 6-P4/16
    [-1, 9, C3, [512]],            # 7
-   [-1, 1, CoordAtt, [32]],   # 8
+   [-1, 1, CBAMBlock, [16, 7]],   # 8
    [-1, 1, Conv, [1024, 3, 2]],   # 9-P5/32
    [-1, 3, C3, [1024]],           # 10
-   [-1, 1, CoordAtt, [32]],   # 11
+   [-1, 1, CBAMBlock, [16, 7]],   # 11
    [-1, 1, SPPF, [1024, 5]],      # 12
   ]
 
